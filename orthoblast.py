@@ -153,6 +153,7 @@ def main():
             for p in range(len(mode.proteins)):
                 print(f'Creating graphs ({count}/{task})', end ='\r')
                 drawer.drawResult(s, mode.proteins[p], mode.evalue, mode.coverage, rdf[s].iloc[p], mode.outname)
+                count += 1
         print(f'Creation of graphs completed               ')
         time.sleep(0.5)
 
