@@ -3,6 +3,7 @@ import re
 import sys
 import copy
 import gzip
+import time
 import shutil
 import operator
 import subprocess
@@ -35,7 +36,8 @@ def main():
         return
 
     print(f'Running set: {len(mode.proteins)} proteins across {len(mode.species)} species')
-    
+    time.sleep(0.5)
+
     task = len(mode.proteins)
     toremove = []
     result = ['.fasta already exists', '.fasta downloaded', 
@@ -70,6 +72,7 @@ def main():
             pfin = True
     else:
         print('All proteins were successfully acquired          ')
+    time.sleep(0.5)
         
     task = len(mode.species)
     toremove = []
@@ -102,9 +105,11 @@ def main():
             sfin = True
     else:
         print('All genomes were successfully acquired               ')
+    time.sleep(0.5)
 
     if not pfin and not sfin:
         print('All proteins and genomes were successfully acquired. Continuing')
+        time.sleep(0.5)
     else:
         answer = ''
         while True:
@@ -127,6 +132,7 @@ def main():
             blaster.runBlast(s, p, mode.evalue, mode.outname)
             count += 1
     print('TBLAST run completed                    ')
+    time.sleep(0.5)
 
     rdf = pandas.DataFrame()
     count = 1
@@ -138,15 +144,17 @@ def main():
             results.append(result)
             count += 1
         rdf[s] = pandas.Series(results)
-    print(f'Analysis of results completed')
+    print(f'Analysis of results completed               ')
+    time.sleep(0.5)
 
     count = 1
     if mode.draw == True:
         for s in mode.species:
-            for p in mode.proteins:
+            for p in range(len(mode.proteins)):
                 print(f'Creating graphs ({count}/{task})', end ='\r')
-                drawer.drawResult(s, p, rdf[s], mode.outname)
-        print(f'Creation of graphs completed')
+                drawer.drawResult(s, mode.proteins[p], mode.evalue, mode.coverage, rdf[s].iloc[p], mode.outname)
+        print(f'Creation of graphs completed               ')
+        time.sleep(0.5)
 
     for s in mode.species:
         rdf[s] = misc.groupattr(rdf[s], 'nhomo')
@@ -154,6 +162,9 @@ def main():
         rdf = pandas.concat([mode.pdf, rdf], axis = 1)
     else:
         rdf['Proteins'] = mode.proteins
+        cols = rdf.columns.tolist()
+        cols = cols[-1:] + cols[:-1]
+        rdf = rdf[cols]
     rdf.to_excel(os.path.join(os.getcwd(), 'results', mode.outname if mode.outname else '', 'result.xlsx'), index = False)
     print(f'Run finished. Results are in results/{mode.outname if mode.outname else ""}')
 

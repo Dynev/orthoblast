@@ -15,6 +15,9 @@ def runBlast(spec, prot, ev, outname):
         if ev == float(tev):
             return
     
+    if not os.path.isdir(os.path.join(os.getcwd(), 'results', outname if outname else '', 'output')):
+        os.mkdir(os.path.join(os.getcwd(), 'results', outname if outname else '', 'output'))
+        
     cline = tblastn(query = os.path.join(os.getcwd(), 'proteins', f'{prot}.fasta'), 
                     db = os.path.join(os.getcwd(), 'genomes', spec, spec), 
                     out = output,
@@ -24,5 +27,6 @@ def runBlast(spec, prot, ev, outname):
     cline()
 
 def runMakeDB(inname, outname):
-    cline = makeblastdb(input_file = inname, dbtype = 'nucl', out = outname)
+    output = os.path.join(os.getcwd(), 'genomes', outname, outname)
+    cline = makeblastdb(input_file = inname, dbtype = 'nucl', out = output)
     cline()

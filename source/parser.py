@@ -39,7 +39,7 @@ def getMode(args):
   -c  Target percent coverage of query by hit to consider homologous (int)
       If not specified, program will use internal custom criteria
         
-  -g  Create a graph for every result to review manually (boolean)
+  -d  Create a graph for every result to review manually (boolean)
       Default = False (do not create graphs)
         
   -n  Name for a folder inside "results" in program directory
@@ -112,11 +112,11 @@ def getMode(args):
         c = args[args.index('-c')+1]
         if '-' not in c:
             try:
-                coverage = int(c)
-                if coverage < 0 or coverage > 100:
+                coverage = float(c)
+                if coverage < 0 or coverage > 1:
                     return "Invalid coverage parameter. Exiting"
             except ValueError:
-                return "Cannot convert coverage parameter to integer. Exiting"
+                return "Cannot convert coverage parameter to float. Exiting"
         else:
             return "Coverage parameter mentioned, but not specified. Exiting"
     if '-d' in args:

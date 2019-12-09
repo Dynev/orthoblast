@@ -173,7 +173,7 @@ class Hit:
     def getCov(self):
         for hsp in self.hsps:
             self.qcov += hsp.alen()
-        self.qcov /= self.query.qlen / 100
+        self.qcov /= self.query.qlen
         self.qcov = round(self.qcov, 2)
     def getSeq(self):
         self.hsps = sorted(self.hsps, key = op.attrgetter('qstart'))
@@ -195,17 +195,6 @@ class Hit:
                 self.getDomains()
                 hdn = misc.groupattr(self.domains, 'name')
                 qdn = misc.groupattr(self.query.domains, 'name')
-                if set(hdn) == set(qdn):
-                    self.homo = True
-                else:
-                    self.homo = False
-            else:
-                self.homo = False
-        else:
-            if (self.qcov >= self.query.dlen / self.query.qlen - 0.1) and self.qcov >= 0.5:
-                self.getDomains()
-                hdn = misc.groupattr(self.domains, 'name')
-                qdn = misc.groupattr(self.query.domains, 'name')
                 if len(self.domains) == len(self.query.domains):
                     if set(hdn) == set(qdn):
                         self.homo = True
@@ -215,6 +204,21 @@ class Hit:
                     self.homo = False
             else:
                 self.homo = False
+        else:
+            if True: #self.qcov >= 0.5:
+                if (self.qcov >= self.query.dlen / self.query.qlen - 0.1):
+                    self.getDomains()
+                    hdn = misc.groupattr(self.domains, 'name')
+                    qdn = misc.groupattr(self.query.domains, 'name')
+                    if len(self.domains) == len(self.query.domains):
+                        if set(hdn) == set(qdn):
+                            self.homo = True
+                        else:
+                            self.homo = False
+                    else:
+                        self.homo = False
+                else:
+                    self.homo = False
 
 class Query:
     def __init__(self, qlen, name):

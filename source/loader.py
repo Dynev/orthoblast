@@ -50,7 +50,7 @@ def installGenome(spec):
     if spec not in misc.SPEC.keys():
         return False
     
-    adr = misc.ADDRESS['genomes'] + misc.SPEC[spec] + '/latest_assembly_versions/'
+    adr = misc.ADDRESS['ncbi'] + misc.SPEC[spec] + '/latest_assembly_versions/'
     for i in (misc.FILTER['chrom'], misc.FILTER['genome_file']):
         req = requests.get(adr)
         ret = req.text
@@ -58,13 +58,15 @@ def installGenome(spec):
         adr = adr + res
     
     with requests.get(adr, stream = True) as req:
-        with open(os.path.join('genomes', f'{spec}.fna.gz'), 'wb+') as gz:
+        with open(os.path.join(os.getcwd(), 'genomes', f'{spec}.fna.gz'), 'wb+') as gz:
             shutil.copyfileobj(req.raw, gz)
-    with gzip.open(os.path.join('genomes', f'{spec}.fna.gz')) as gz:
-        with open(os.path.join('genomes', f'{spec}.fna')) as fna:
+    with gzip.open(os.path.join(os.getcwd(), 'genomes', f'{spec}.fna.gz')) as gz:
+        with open(os.path.join(os.getcwd(), 'genomes', f'{spec}.fna'), 'wb+') as fna:
             shutil.copyfileobj(gz, fna)
-    os.remove(os.path.join('genomes', f'{spec}.fna.gz'))
-    blaster.runMakeDB(os.path.join('genomes', f'{spec}.fna'), f'{spec}')
+    os.remove(os.path.join(os.getcwd(), 'genomes', f'{spec}.fna.gz'))
+    blaster.runMakeDB(os.path.join(os.getcwd(), 'genomes', f'{spec}.fna'), f'{spec}')
+    os.remove(os.path.join(os.getcwd(), 'genomes', f'{spec}.fna'))
+    return True
 
 def loadSeq(prot):
     adr = os.path.join(os.getcwd(), 'proteins', f'{prot}.fasta')
