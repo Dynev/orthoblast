@@ -21,3 +21,5 @@ Usage:
 -n: Name for a folder inside "results" in program directory where the output will be stored 
 
 After every run, you can find your results in the folder "results"
+
+![One of the results](preview.png)
